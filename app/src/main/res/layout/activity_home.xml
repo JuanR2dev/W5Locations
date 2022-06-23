@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.home.HomeActivity">
+
+        <EditText
+            android:id="@+id/input_tvw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBaseline_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <Button
+            android:id="@+id/get_last_location_btn"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Get last location"
+            app:layout_constraintTop_toBottomOf="@id/input_tvw"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <Button
+            android:id="@+id/get_current_location_btn"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Get current location"
+            app:layout_constraintTop_toBottomOf="@id/get_last_location_btn"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <Button
+            android:id="@+id/get_coords_btn"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Get coords"
+            app:layout_constraintTop_toBottomOf="@id/get_current_location_btn"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <Button
+            android:id="@+id/get_geocode_btn"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Get geocode"
+            app:layout_constraintTop_toBottomOf="@id/get_coords_btn"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
