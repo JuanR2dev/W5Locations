@@ -19,11 +19,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import retrofit2.Retrofit
 import timber.log.Timber
 import java.io.IOException
 import java.lang.System.gc
 import java.util.*
-
+import com.squareup.moshi.Moshi
+import com.syllabus.w5.repository.remote.dominos.server.DominosRetrofitService
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 class HomeActivity : AppCompatActivity() {
 
@@ -35,10 +38,25 @@ class HomeActivity : AppCompatActivity() {
         )
     }
 
-    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableLocation()
+        bindActions()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://order.dominos.com/")
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(DominosRetrofitService::class.java)
+
+        lifecycleScope.launch {
+            val response = service.search("26870")
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun bindActions() {
         binding.getLastLocationBtn.setOnClickListener { btn ->
             binding.getLastLocationBtn.isEnabled = false
             lifecycleScope.launch {
