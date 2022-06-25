@@ -6,7 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface DominosRetrofitService {
-    @GET("power/store-locator")
+    @GET("/power/store-locator")
     suspend fun search(
         @Query("s")
         zipCode: String

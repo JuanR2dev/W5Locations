@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.LocationServices
+import com.squareup.moshi.Json
 import com.syllabus.w5.R
 import com.syllabus.w5.databinding.ActivityHomeBinding
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +27,9 @@ import java.lang.System.gc
 import java.util.*
 import com.squareup.moshi.Moshi
 import com.syllabus.w5.repository.remote.dominos.server.DominosRetrofitService
+import com.syllabus.w5.repository.remote.dominos.server.response.SearchResponse
+import com.syllabus.w5.repository.remote.dominos.server.response.Store
+import okhttp3.*
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 class HomeActivity : AppCompatActivity() {
@@ -43,15 +47,22 @@ class HomeActivity : AppCompatActivity() {
         enableLocation()
         bindActions()
 
+        val moshi = Moshi.Builder().build()
+
         val retrofit = Retrofit.Builder()
             .baseUrl("https://order.dominos.com/")
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
-
         val service = retrofit.create(DominosRetrofitService::class.java)
 
         lifecycleScope.launch {
-            val response = service.search("26870")
+            try {
+                val response = service.search("26870")
+                var body = response.body()!!
+                Timber.d("Recommended stores count: ${body.Stores.size}")
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 
