@@ -27,9 +27,11 @@ import java.lang.System.gc
 import java.util.*
 import com.squareup.moshi.Moshi
 import com.syllabus.w5.repository.remote.dominos.server.DominosRetrofitService
+import com.syllabus.w5.repository.remote.dominos.server.DominosServiceManager
 import com.syllabus.w5.repository.remote.dominos.server.response.SearchResponse
 import com.syllabus.w5.repository.remote.dominos.server.response.Store
 import okhttp3.*
+import org.koin.android.ext.android.inject
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 class HomeActivity : AppCompatActivity() {
@@ -41,29 +43,12 @@ class HomeActivity : AppCompatActivity() {
             R.layout.activity_home
         )
     }
+    private val dominosServiceManager: DominosServiceManager by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableLocation()
         bindActions()
-
-        val moshi = Moshi.Builder().build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://order.dominos.com/")
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .build()
-        val service = retrofit.create(DominosRetrofitService::class.java)
-
-        lifecycleScope.launch {
-            try {
-                val response = service.search("26870")
-                var body = response.body()!!
-                Timber.d("Recommended stores count: ${body.Stores.size}")
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
-        }
     }
 
     @SuppressLint("MissingPermission")
@@ -140,6 +125,20 @@ class HomeActivity : AppCompatActivity() {
                     Timber.e(e)
                 }
                 binding.getGeocodeBtn.isEnabled = true
+            }
+        }
+        binding.callServiceBtn.setOnClickListener {
+            binding.callServiceBtn.isEnabled = false
+            CoroutineScope(Dispatchers.IO).launch {
+                Timber.d("Sending Request")
+                dominosServiceManager.search("New York")
+                    .onSuccess {
+                        Timber.d("Success Request: ${it.Stores.size}")
+                    }
+                    .onFailure {
+                        Timber.e(it)
+                    }
+                binding.callServiceBtn.isEnabled = true
             }
         }
         Timber.d("Home activity created")
